@@ -3,12 +3,18 @@ package com.thissu.uikit
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Point
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import com.thissu.uikit.GoreGraphics.CGRect
 
 import com.thissu.uikit.Foundation.NSLog
 import com.thissu.uikit.UIViewController.UIViewController
+
+import android.view.WindowManager
+
+
 
 
 /**
@@ -20,30 +26,30 @@ import com.thissu.uikit.UIViewController.UIViewController
  *
  * 注意在没有理解UIWindow和UIViewController之前，最好不要重写UIWindow
  */
-class UIWindow : View{
+open class UIWindow : View{
 
-    final var rootViewController:UIViewController? = null//!<根视图。这个变量属性唯一，window只展示rootViewController上的内容
+    final var rootViewController:UIViewController? = null//!<根视图。这个变量唯一，window只展示rootViewController上的内容
 
     /**  ----------------------------------------------- 构造函数  -----------------------------------------------
      *
      * */
     constructor(context: Context):super(context){
-        NSLog.print(" one parameter constructor")
+        NSLog.print("UIWindow one parameter constructor")
 
         initRootViewController()
 
     }
 
-    constructor(context: Context, attrs: AttributeSet):super(context, attrs, 0, 0){
+    constructor(context: Context, attrs: AttributeSet):super(context, attrs){
 
-        NSLog.print(" two parameter constructor")
+        NSLog.print(" UIWindow two parameter constructor")
         initRootViewController()
 
 
     }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int):super(context, attrs,  defStyleAttr, 0){
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int):super(context, attrs,  defStyleAttr){
 
-        NSLog.print(" three parameter constructor")
+        NSLog.print("UIWindow three parameter constructor")
         initRootViewController()
 
     }
@@ -60,7 +66,7 @@ class UIWindow : View{
      * */
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int):super(context, attrs, defStyleAttr, defStyleRes){
 
-        NSLog.print(" four parameter constructor")
+        NSLog.print("UIWindow four parameter constructor")
         initRootViewController()
 
     }
@@ -72,12 +78,31 @@ class UIWindow : View{
 
         this.setBackgroundColor(Color.WHITE)
 
+        val manager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        // 方法1,获取屏幕的默认分辨率
+        val display = manager.defaultDisplay // getWindowManager().getDefaultDisplay();
+
+        var realSize:Point = Point()
+        display.getRealSize(realSize)
+
+        var rectSize:Rect = Rect()
+        display.getRectSize(rectSize)
+
+        var size:Point = Point()
+        display.getSize(size)
+
+        NSLog.print("real size:$realSize")
+        NSLog.print("rect size:$rectSize")
+        NSLog.print("size:$size")
+
+
 
         //初始化视图控制器
         rootViewController = UIViewController()
 
         //初始化结束后加载视图
         rootViewController?.loadView()
+        rootViewController?.view?.frame  = CGRect(width = (size.x - 10).toFloat(), height = (size.y - 200).toFloat())
 
         //视图加载完成后，视图控制器才算是真正加载
         rootViewController?.viewDidLoad()
@@ -96,7 +121,7 @@ class UIWindow : View{
             rootViewController?.viewDidAppear()
         }
         else{
-            NSLog.print("high-grade error: 画布不存在！")
+//            NSLog.print("high-grade error: 画布不存在！")
         }
 
     }
