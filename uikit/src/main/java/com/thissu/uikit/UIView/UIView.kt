@@ -5,9 +5,11 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
+import android.util.SparseArray
 import android.view.MotionEvent
 import com.thissu.uikit.CoreAnimation.CALayer
 import com.thissu.uikit.Foundation.NSLog
+import com.thissu.uikit.Foundation.UITouch
 import com.thissu.uikit.GoreGraphics.CGRect
 
 
@@ -27,8 +29,6 @@ open class UIView(){
         get() = field
         set(value) {
             field = value.copy()
-            NSLog.print("view set new frame:$value")
-            NSLog.print("view set frame result:$frame")
         }/** 注意frame属性的赋值一定要用copy */
     //
 
@@ -38,17 +38,15 @@ open class UIView(){
     var layer:CALayer = CALayer()/**layer，里面存储绘图和transform相关的东西.layer设置为只读属性*/
         get() = field
 
-    var subViews = mutableListOf<UIView>()/**子视图的数组*/
+    var subViews = arrayListOf<UIView>() /**子视图的数组*/
 
 
     /** ---------------------------------------------- 构造函数 -----------------------------------------
      *
      */
     init {
-        NSLog.print("UIView init")
         frame = CGRect(0f,0f,0f,0f)
     }
-
 
     constructor(viewFrame: CGRect):this(){
 
@@ -69,7 +67,7 @@ open class UIView(){
 
     override fun toString(): String {
 
-        return  "view :{${frame.x},${frame.y},${frame.width},${frame.height}} and color:$backgroundColor"
+        return  "view : {${frame.x},${frame.y},${frame.width},${frame.height}} and color:$backgroundColor and ${super.toString()}"
     }
 
 
@@ -91,7 +89,6 @@ open class UIView(){
 
         //设置绘制的起点，即锚点.
         canvas.translate(frame.x, frame.y)
-        NSLog.print("view`s frame:${frame}")
 
         // 创建画笔
         val paint = Paint()
@@ -154,10 +151,16 @@ open class UIView(){
 
     }
 
-    open fun touchesBegan(withEvent: MotionEvent){
+    /** ---------------------------------------------- open event -----------------------------------------
+     *  子类在用到时，重写下面的接口，然后返回对应的状态
+     */
 
-        NSLog.print("UIview touches began")
+    /**
+     * 触摸开始的事件，子类如果重写这个接口并且做了相应的操作
+     * */
+    open fun touchesBegan(touch:UITouch, withEvent: MotionEvent){
 
     }
+
 
 }

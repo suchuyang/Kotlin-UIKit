@@ -15,6 +15,7 @@ import com.thissu.uikit.UIViewController.UIViewController
 
 import android.view.WindowManager
 import com.thissu.uikit.Foundation.UIScreen
+import com.thissu.uikit.Foundation.UITouch
 import com.thissu.uikit.UIApplication.UIApplication
 
 
@@ -183,11 +184,16 @@ open class UIWindow : View{
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
 
-
         NSLog.print("dispatchTouchEvent")
 
+        val touch = UITouch()
+
+        touch.touchX = event!!.getX()
+        touch.touchY = event!!.getY()
+
+
         if (event?.action == MotionEvent.ACTION_DOWN){
-            rootViewController!!.view!!.touchesBegan(event)
+            rootViewController!!.view!!.dispatchTouchesBeganEvent(touch,event!!)
         }
 
         return super.dispatchTouchEvent(event)
