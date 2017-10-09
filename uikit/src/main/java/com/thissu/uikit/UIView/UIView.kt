@@ -5,7 +5,9 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
+import android.view.MotionEvent
 import com.thissu.uikit.CoreAnimation.CALayer
+import com.thissu.uikit.Foundation.NSLog
 import com.thissu.uikit.GoreGraphics.CGRect
 
 
@@ -14,7 +16,7 @@ import com.thissu.uikit.GoreGraphics.CGRect
  *
  * UIView基于基本的draw功能重新定义，自己管理内部的子视图和各自属性及动作传递。
  */
-class UIView(){
+open class UIView(){
 
     /** ---------------------------------------------- property -----------------------------------------
      *
@@ -23,7 +25,11 @@ class UIView(){
     //视图的尺寸属性
     final var  frame: CGRect = CGRect()
         get() = field
-        set(value) {field = value.copy()}/** 注意frame属性的赋值一定要用copy */
+        set(value) {
+            field = value.copy()
+            NSLog.print("view set new frame:$value")
+            NSLog.print("view set frame result:$frame")
+        }/** 注意frame属性的赋值一定要用copy */
     //
 
     var backgroundColor: Int = Color.WHITE/**背景颜色*/
@@ -38,6 +44,10 @@ class UIView(){
     /** ---------------------------------------------- 构造函数 -----------------------------------------
      *
      */
+    init {
+        NSLog.print("UIView init")
+        frame = CGRect(0f,0f,0f,0f)
+    }
 
 
     constructor(viewFrame: CGRect):this(){
@@ -46,13 +56,29 @@ class UIView(){
         frame = viewFrame.copy()
     }
 
+    public fun addSubview(view: UIView){
+
+        if(view != null){
+            subViews.add(view)
+        }
+        else{
+            NSLog.print("low-grade error：添加了一个null的view")
+        }
+    }
+
+
+    override fun toString(): String {
+
+        return  "view :{${frame.x},${frame.y},${frame.width},${frame.height}} and color:$backgroundColor"
+    }
+
 
     /** ---------------------------------------------- draw -----------------------------------------
      *
      */
 
     //通知window，更新视图。
-    fun setNeedsDisplay(){
+    open fun setNeedsDisplay(){
 
     }
 
@@ -61,10 +87,11 @@ class UIView(){
      *
      * 如果子类要实现自己的绘制，那么就直接覆盖掉这个函数
      * */
-    fun draw(canvas: Canvas){
+    open fun draw(canvas: Canvas){
 
         //设置绘制的起点，即锚点.
         canvas.translate(frame.x, frame.y)
+        NSLog.print("view`s frame:${frame}")
 
         // 创建画笔
         val paint = Paint()
@@ -107,6 +134,15 @@ class UIView(){
             canvas.drawRect(0f, 0f, frame.width, frame.height, paint)
         }
 
+        //绘制子视图
+        for( subview in subViews ){
+            canvas.save()//保存画布状态，在绘制完子视图后要恢复。绘制子视图时设置新的锚点，但是新的锚点位置居然时相对于其父视图的，不知道什么原理，但真他娘的舒坦。
+
+            subview.draw(canvas = canvas)
+
+            canvas.restore()
+        }
+
         /**
          * public void drawCircle (float cx, float cy, float radius, Paint paint)
         cx：圆心的x坐标。
@@ -115,6 +151,12 @@ class UIView(){
         paint：绘制时所使用的画笔。
          * */
         //canvas.drawCircle(_frame.width / 2, _frame.height / 2, _frame.width / 2, paint)
+
+    }
+
+    open fun touchesBegan(withEvent: MotionEvent){
+
+        NSLog.print("UIview touches began")
 
     }
 

@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import com.thissu.uikit.GoreGraphics.CGRect
 
@@ -13,8 +14,8 @@ import com.thissu.uikit.Foundation.NSLog
 import com.thissu.uikit.UIViewController.UIViewController
 
 import android.view.WindowManager
-
-
+import com.thissu.uikit.Foundation.UIScreen
+import com.thissu.uikit.UIApplication.UIApplication
 
 
 /**
@@ -29,6 +30,22 @@ import android.view.WindowManager
 open class UIWindow : View{
 
     final var rootViewController:UIViewController? = null//!<根视图。这个变量唯一，window只展示rootViewController上的内容
+        get() = field
+        set(value) {
+
+            //卸载旧的视图
+            if(field != null){
+                field!!.viewDidUnload()
+            }
+
+            //赋值
+            field = value
+
+            //展示新的视图
+            if(field != null){
+                this.invalidate()
+            }
+        }
 
     /**  ----------------------------------------------- 构造函数  -----------------------------------------------
      *
@@ -36,21 +53,23 @@ open class UIWindow : View{
     constructor(context: Context):super(context){
         NSLog.print("UIWindow one parameter constructor")
 
-        initRootViewController()
+        windowWillFinishLaunching()
 
     }
 
     constructor(context: Context, attrs: AttributeSet):super(context, attrs){
 
         NSLog.print(" UIWindow two parameter constructor")
-        initRootViewController()
+        windowWillFinishLaunching()
+
 
 
     }
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int):super(context, attrs,  defStyleAttr){
 
         NSLog.print("UIWindow three parameter constructor")
-        initRootViewController()
+        windowWillFinishLaunching()
+
 
     }
 
@@ -67,17 +86,17 @@ open class UIWindow : View{
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int):super(context, attrs, defStyleAttr, defStyleRes){
 
         NSLog.print("UIWindow four parameter constructor")
-        initRootViewController()
+        windowWillFinishLaunching()
 
     }
 
-    /** 初始化我们的视图控制器。
-     * 如果要定制自己的UIViewController，那就要重写这个函数，然后赋值自己的视图控制器
+
+    /** 程序加载完成后执行的一些动作
      * */
-    final fun initRootViewController(){
+    final  fun windowWillFinishLaunching(){
 
-        this.setBackgroundColor(Color.WHITE)
 
+        //赋值屏幕的宽高等属性
         val manager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         // 方法1,获取屏幕的默认分辨率
         val display = manager.defaultDisplay // getWindowManager().getDefaultDisplay();
@@ -91,38 +110,86 @@ open class UIWindow : View{
         var size:Point = Point()
         display.getSize(size)
 
-        NSLog.print("real size:$realSize")
-        NSLog.print("rect size:$rectSize")
-        NSLog.print("size:$size")
+        UIScreen.shared.screenWidth = size.x.toFloat()
+        UIScreen.shared.screenHeight = size.y.toFloat()
 
-
-
-        //初始化视图控制器
-        rootViewController = UIViewController()
-
-        //初始化结束后加载视图
-        rootViewController?.loadView()
-        rootViewController?.view?.frame  = CGRect(width = (size.x - 10).toFloat(), height = (size.y - 200).toFloat())
-
-        //视图加载完成后，视图控制器才算是真正加载
-        rootViewController?.viewDidLoad()
+        //记录全局唯一的window
+        UIApplication.sharedApplication.keyWindow = this
 
     }
 
 
+    /** 当我们的UIWindow被添加到Android的真实window上时会调用这个接口。
+     *
+     * */
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        this.setBackgroundColor(Color.WHITE)
+
+        windowWillLoad()
+
+        if( rootViewController == null){
+            //初始化视图控制器
+            rootViewController = UIViewController()
+        }
+
+
+        NSLog.print("window onAttachedToWindow")
+    }
+
+    /**
+     * window加载时调用的接口，子类可以重写。
+     * 如果子类在这个接口中使用了自己的rootVC，那么我们就不需要再自己赋值默认的vc了
+     *
+     */
+    open fun windowWillLoad(){ }
+
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-
+        NSLog.print("UIView onDraw")
         if(canvas != null){
-            //调用viewWillAppear，开始进行绘图的工作
-            rootViewController?.viewWillAppear(canvas = canvas)
 
-            //绘图结束之后调用viewDidAppear表示视图已经展示好了。
-            rootViewController?.viewDidAppear()
+            if (!rootViewController!!.isCurrentViewController){
+                //调用viewWillAppear，开始进行绘图的工作
+                rootViewController!!.viewWillAppear()
+
+                rootViewController?.drawViewsOn(canvas = canvas)
+
+                rootViewController!!.viewDidAppear()
+
+            }
+            else{
+
+                rootViewController?.drawViewsOn(canvas = canvas)
+
+                //调用vc的绘制完成接口
+
+            }
+
+
+
+
+
+            //绘图结束之后需要调用一个视图绘制完成的函数。
         }
         else{
 //            NSLog.print("high-grade error: 画布不存在！")
         }
 
+    }
+
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+
+
+        NSLog.print("dispatchTouchEvent")
+
+        if (event?.action == MotionEvent.ACTION_DOWN){
+            rootViewController!!.view!!.touchesBegan(event)
+        }
+
+        return super.dispatchTouchEvent(event)
     }
 }

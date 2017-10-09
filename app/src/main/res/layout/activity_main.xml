@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.thissu.uikitdemo.DemoWindow
+    <com.thissu.uikit.DemoView.DemoWindow
         android:id="@+id/window"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

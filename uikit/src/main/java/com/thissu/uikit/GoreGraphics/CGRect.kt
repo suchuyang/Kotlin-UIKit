@@ -6,7 +6,10 @@ package com.thissu.uikit.GoreGraphics
  * 因为kotlin 没有struct类型，所以只能用类来表示CGRect。而类在赋值的时候是指针赋值，所以大家一定要注意，在自定义的视图里，frame一定要使用copy赋值
  */
 
+data class CGPoint(var x: Float = 0f, var y: Float = 0f){
 
+
+}
 
 data class CGRect(var x: Float = 0f, var y: Float = 0f, var width: Float = 0f, var height: Float = 0f){
 
