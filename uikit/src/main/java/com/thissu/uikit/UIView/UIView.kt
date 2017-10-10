@@ -11,6 +11,7 @@ import com.thissu.uikit.CoreAnimation.CALayer
 import com.thissu.uikit.Foundation.NSLog
 import com.thissu.uikit.Foundation.UITouch
 import com.thissu.uikit.GoreGraphics.CGRect
+import com.thissu.uikit.UIApplication.UIApplication
 
 
 /**
@@ -19,6 +20,8 @@ import com.thissu.uikit.GoreGraphics.CGRect
  * UIView基于基本的draw功能重新定义，自己管理内部的子视图和各自属性及动作传递。
  */
 open class UIView(){
+
+
 
     /** ---------------------------------------------- property -----------------------------------------
      *
@@ -77,7 +80,7 @@ open class UIView(){
 
     //通知window，更新视图。
     open fun setNeedsDisplay(){
-
+        UIApplication.sharedApplication.keyWindow!!.invalidate()
     }
 
     /**

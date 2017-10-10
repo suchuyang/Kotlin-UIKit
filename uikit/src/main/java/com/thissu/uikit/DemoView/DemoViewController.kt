@@ -10,6 +10,9 @@ import android.util.Log
 import com.thissu.uikit.UIAppDelegate
 import com.thissu.uikit.UIApplication.UIApplication
 import com.thissu.uikit.UILabel.UILabel
+import android.view.animation.Transformation
+import android.view.animation.Animation
+import com.thissu.uikit.animation
 
 
 /**
@@ -62,6 +65,7 @@ class DemoViewController(): UIViewController() {
         label.frame = CGRect(10f,250f,700f,50f)
         label.backgroundColor = Color.GREEN
         label.text = "Hello UIKit！"
+
         view!!.addSubview(label)
 
     }
@@ -78,6 +82,12 @@ class DemoViewController(): UIViewController() {
     }
 
     fun moveBlueView(){
+
+
+        blueview?.animation()
+
+        return
+
         if(!isMoving){
             val cdt = object : CountDownTimer(10000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {

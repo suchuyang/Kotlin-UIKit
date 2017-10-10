@@ -1,7 +1,5 @@
 package com.thissu.uikit.DemoView
 
-import android.net.sip.SipSession
-import android.text.method.Touch
 import android.view.MotionEvent
 import com.thissu.uikit.Foundation.NSLog
 import com.thissu.uikit.Foundation.UITouch
@@ -13,6 +11,7 @@ import com.thissu.uikit.Foundation.UITouch
 class DemoView():com.thissu.uikit.UIView() {
 
     var touchblock:(()->Unit)? = null
+
 
     override fun touchesBegan(touch: UITouch, withEvent: MotionEvent) {
 

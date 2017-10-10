@@ -3,6 +3,7 @@ package com.thissu.uikit.UILabel
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.os.Build
 
 /**
@@ -14,6 +15,8 @@ class UILabel(): com.thissu.uikit.UIView() {
     var text:String? = null
     var textColor:Int? = null
 
+    init {
+    }
 
     /**
      * label的绘图函数 ，绘制文字。
@@ -28,7 +31,6 @@ class UILabel(): com.thissu.uikit.UIView() {
         // 去锯齿
         paint.isAntiAlias = true
 
-
         paint.setColor(backgroundColor)//设置颜色
         paint.setStyle(Paint.Style.FILL)//默认绘图为填充模式
 
@@ -36,6 +38,8 @@ class UILabel(): com.thissu.uikit.UIView() {
 
 
         paint.setColor(Color.BLACK)//设置颜色
+
+        paint.textSize = 40f
 
         if(text != null){
 
