@@ -2,21 +2,33 @@ package com.thissu.uikit
 
 import android.app.Activity
 import android.os.Bundle
+import com.thissu.uikit.Foundation.NSLog
 
 /**
  * Created by this on 2017/10/3.
  *
  * UIAppDelegate，继承Activity，将Activity作为程序的最上层容器，封装加载，前后台，等同于iOS的appdelegate
  */
-class UIAppDelegate():Activity() {
+open class UIAppDelegate():Activity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+
+        NSLog.print("appdelegate onCreate")
     }
 
     override fun onStart() {
         super.onStart()
+        NSLog.print("appdelegate onStart")
+
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        NSLog.print("appdelegate onRestart")
+
     }
 
     /**
@@ -26,6 +38,8 @@ class UIAppDelegate():Activity() {
 
     override fun onResume() {
         super.onResume()
+        NSLog.print("appdelegate onResume")
+
     }
 
 
@@ -41,6 +55,7 @@ class UIAppDelegate():Activity() {
      */
     override fun onPause() {
         super.onPause()
+        NSLog.print("appdelegate onPause")
 
 
     }
@@ -51,6 +66,16 @@ class UIAppDelegate():Activity() {
     }
 
 
+    override fun onStop() {
+        super.onStop()
+        NSLog.print("appdelegate onStop")
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NSLog.print("appdelegate onDestroy")
+
+    }
 
 }

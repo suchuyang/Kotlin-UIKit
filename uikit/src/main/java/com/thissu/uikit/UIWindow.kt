@@ -102,17 +102,19 @@ open class UIWindow : View{
         // 方法1,获取屏幕的默认分辨率
         val display = manager.defaultDisplay // getWindowManager().getDefaultDisplay();
 
-        var realSize:Point = Point()
-        display.getRealSize(realSize)
-
-        var rectSize:Rect = Rect()
-        display.getRectSize(rectSize)
+//        var realSize:Point = Point()
+//        display.getRealSize(realSize)
+//
+//        var rectSize:Rect = Rect()
+//        display.getRectSize(rectSize)
 
         var size:Point = Point()
         display.getSize(size)
 
-        UIScreen.shared.screenWidth = size.x.toFloat()
-        UIScreen.shared.screenHeight = size.y.toFloat()
+        UIScreen.shared.absoluteWidth = size.x.toFloat()
+        UIScreen.shared.absoluteHeight = size.y.toFloat()
+        UIScreen.shared.launchScreenProperty()
+
 
         //记录全局唯一的window
         UIApplication.sharedApplication.keyWindow = this
@@ -180,6 +182,13 @@ open class UIWindow : View{
         }
 
     }
+
+    override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
+        super.onWindowFocusChanged(hasWindowFocus)
+        NSLog.print("window onWindowFocusChanged")
+
+    }
+
 
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {

@@ -28,7 +28,6 @@ open class UIViewController() {
                 viewDidUnload()
             }
             else{
-                NSLog.print("viewController set a new view")
                 //更新视图
                 UIApplication.sharedApplication.keyWindow?.invalidate()
             }
@@ -39,6 +38,8 @@ open class UIViewController() {
      * 创建ViewController时调用
      * */
     init {
+
+        NSLog.print("viewController init")
 
         //初始化结束后加载视图
         loadView()
@@ -57,7 +58,7 @@ open class UIViewController() {
      * view在这个函数里完成初始化和加载的工作,比方说初始属性和数据
      * */
     public fun loadView(){
-        var frame = CGRect(0f,0f,UIScreen.shared.screenWidth,UIScreen.shared.screenHeight)
+        var frame = CGRect(0f,0f,UIScreen.shared.relativeWidth,UIScreen.shared.relativeHeight)
         view?.frame = frame
         view?.backgroundColor = Color.WHITE
 

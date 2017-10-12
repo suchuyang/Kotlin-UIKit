@@ -22,7 +22,6 @@ import com.thissu.uikit.UIApplication.UIApplication
 open class UIView(){
 
 
-
     /** ---------------------------------------------- property -----------------------------------------
      *
      */
@@ -33,6 +32,7 @@ open class UIView(){
         set(value) {
             field = value.copy()
         }/** 注意frame属性的赋值一定要用copy */
+
     //
 
     var backgroundColor: Int = Color.WHITE/**背景颜色*/
@@ -42,6 +42,8 @@ open class UIView(){
         get() = field
 
     var subViews = arrayListOf<UIView>() /**子视图的数组*/
+
+    var superview: UIView? = null//记录父视图，我们在做某些操作的时候，需要使用这个变量。注意循环引用问题
 
 
     /** ---------------------------------------------- 构造函数 -----------------------------------------
@@ -57,21 +59,41 @@ open class UIView(){
         frame = viewFrame.copy()
     }
 
+    override fun toString(): String {
+
+        return  "view : {${frame.x},${frame.y},${frame.width},${frame.height}} and color:$backgroundColor and ${super.toString()}"
+    }
+
+    /** ---------------------------------------------- 添加和移除视图 -----------------------------------------
+     *
+     */
+
     public fun addSubview(view: UIView){
 
         if(view != null){
             subViews.add(view)
+
+            //添加子视图的同时赋值父视图。
+            view.superview = this
         }
         else{
             NSLog.print("low-grade error：添加了一个null的view")
         }
     }
 
+    public fun removeFromSuperview(){
 
-    override fun toString(): String {
 
-        return  "view : {${frame.x},${frame.y},${frame.width},${frame.height}} and color:$backgroundColor and ${super.toString()}"
+
     }
+
+
+    fun bounds(): CGRect{
+
+        return CGRect(0f,0f, frame.width, frame.height)
+
+    }
+
 
 
     /** ---------------------------------------------- draw -----------------------------------------
@@ -91,7 +113,7 @@ open class UIView(){
     open fun draw(canvas: Canvas){
 
         //设置绘制的起点，即锚点.
-        canvas.translate(frame.x, frame.y)
+        canvas.translate(frame.dpiX, frame.dpiY)
 
         // 创建画笔
         val paint = Paint()
@@ -109,29 +131,28 @@ open class UIView(){
                 /** drawRoundRect是API-21（Android 5.0）才有的接口，如果需要在低版本上运行，那就得来改写这里的代码了。
                  *
                  * */
-
-                canvas.drawRoundRect(0f, 0f, frame.width, frame.height,//矩形区域
-                        layer.cornerRadius, layer.cornerRadius, //圆角x方向和y方向的半径
+                canvas.drawRoundRect(0f, 0f, frame.dpiWidth, frame.dpiHeight,//矩形区域
+                        layer.dpiCornerRadius, layer.dpiCornerRadius, //圆角x方向和y方向的半径
                         paint)//画笔
 
 
                 //绘制圆角边框
                 paint.style = Paint.Style.STROKE
-                paint.strokeWidth = layer.borderWidth
+                paint.strokeWidth = layer.dpiBorderWidth
 
                 paint.color = layer.borderColor
 
-                canvas.drawRoundRect(0f, 0f, frame.width, frame.height,//矩形区域
-                        layer.cornerRadius, layer.cornerRadius, //圆角x方向和y方向的半径
+                canvas.drawRoundRect(0f, 0f, frame.dpiWidth, frame.dpiHeight,//矩形区域
+                        layer.dpiCornerRadius, layer.dpiCornerRadius, //圆角x方向和y方向的半径
                         paint)//画笔
             }
             else{
-                canvas.drawRect(0f, 0f, frame.width, frame.height, paint)
+                canvas.drawRect(0f, 0f, frame.dpiWidth, frame.dpiHeight, paint)
             }
         }
         else {
             // 包含旧的API的代码块
-            canvas.drawRect(0f, 0f, frame.width, frame.height, paint)
+            canvas.drawRect(0f, 0f, frame.dpiWidth, frame.dpiHeight, paint)
         }
 
         //绘制子视图

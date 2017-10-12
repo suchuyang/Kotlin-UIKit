@@ -3,6 +3,9 @@ package com.thissu.uikit.CoreAnimation
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import com.thissu.uikit.Foundation.ERROR_HIGH_GRADE
+import com.thissu.uikit.Foundation.NSLog
+import com.thissu.uikit.Foundation.UIScreen
 
 /**
  * Created by apple on 2017/9/29.
@@ -12,10 +15,36 @@ import android.graphics.Paint
 class CALayer() {
 
     var cornerRadius: Float = 0f//圆角
+        set(value) {
+            field = value
+            dpiCornerRadius = value * frameRatio
+        }
 
     var borderWidth: Float = 0f // 边框宽度
+        set(value) {
+            field = value
+            dpiBorderWidth = value * frameRatio
+        }
 
     var borderColor: Int = Color.WHITE//!<边框颜色
+
+    //以后所有涉及到绘图的尺寸相关属性，都需要经过这么一个转换，还好这样的属性还不是很多。
+    var frameRatio: Float = 0f//frame的比例，这个比例是真实屏幕分辨率和320的比例
+
+    var dpiCornerRadius: Float = 0f
+
+    var dpiBorderWidth: Float = 0f
+
+    init {
+
+        //初始化里面要把比例赋值，注意如果frame的初始化在UIScreen之前执行了，那么比例就会出错。所以一定要做赋值校验。
+        frameRatio = UIScreen.shared.frameRatio
+
+        if (frameRatio == 0f){
+            NSLog.print("${ERROR_HIGH_GRADE} 屏幕比例为0，layer 的创建超前了")
+            frameRatio = 1f
+        }
+    }
 
 
     /** 根据layer的变量对paint和canvas进行设置。

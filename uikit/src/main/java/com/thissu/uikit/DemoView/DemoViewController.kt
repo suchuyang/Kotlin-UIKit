@@ -38,21 +38,47 @@ class DemoViewController(): UIViewController() {
 
         //
         blueview = UIView()
-        blueview!!.frame = CGRect(x = 100f, y = 100f, width = 130f, height = 140f)
+        blueview!!.frame = CGRect(13f, 13f, 130f, 130f)
         this.view!!.addSubview(blueview!!)
         blueview!!.backgroundColor = Color.BLUE
 
         yellowview = UIView()
-        yellowview.frame = CGRect(10f,10f,40f,40f)
+        yellowview.frame = blueview!!.bounds().insetBy(10f,10f)
         yellowview.backgroundColor = Color.YELLOW
         blueview!!.addSubview(yellowview)
 
+        //下面添加8个子视图，测试动画效率
+        val tempv1 = UIView()
+        tempv1.frame = yellowview.bounds().insetBy(10f,10f)
+        tempv1.backgroundColor = Color.RED
+        yellowview.addSubview(tempv1)
+
+        val tempv2 = UIView()
+        tempv2.frame = tempv1.bounds().insetBy(10f,10f)
+        tempv2.backgroundColor = Color.BLUE
+        tempv1.addSubview(tempv2)
+
+        val tempv3 = UIView()
+        tempv3.frame = tempv2.bounds().insetBy(10f,10f)
+        tempv3.backgroundColor = Color.YELLOW
+        tempv2.addSubview(tempv3)
+
+
+
+
+        var label = UILabel()
+        label.frame = CGRect(13f,156f,294f,30f)
+        label.backgroundColor = Color.GREEN
+        label.text = "Hello UIKit！"
+
+        view!!.addSubview(label)
+
         touchView = DemoView()
-        touchView.frame = CGRect(110f,400f,100f,100f)
+        touchView.frame = CGRect(50f,199f,220f,40f)
         touchView.backgroundColor = Color.RED
         touchView.layer.borderColor = Color.YELLOW
-        touchView.layer.cornerRadius = 20f
-        touchView.layer.borderWidth = 6f
+        touchView.layer.cornerRadius = 5f
+        touchView.layer.borderWidth = 2f
         this.view!!.addSubview(touchView)
 
 
@@ -60,13 +86,6 @@ class DemoViewController(): UIViewController() {
 
             moveBlueView()
         }
-
-        var label = UILabel()
-        label.frame = CGRect(10f,250f,700f,50f)
-        label.backgroundColor = Color.GREEN
-        label.text = "Hello UIKit！"
-
-        view!!.addSubview(label)
 
     }
 
@@ -86,31 +105,6 @@ class DemoViewController(): UIViewController() {
 
         blueview?.animation()
 
-        return
-
-        if(!isMoving){
-            val cdt = object : CountDownTimer(10000, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-
-                    var tempframe = blueview!!.frame
-                    tempframe.x = tempframe.x + 20f
-                    blueview!!.frame = tempframe
-
-                    UIApplication.sharedApplication.keyWindow!!.invalidate()
-
-                    NSLog.print("blue view:$blueview!!")
-                    NSLog.print("subviews :${view!!.subViews}")
-                    isMoving = true
-                }
-
-                override fun onFinish() {
-                    isMoving = false
-
-                }
-            }
-
-            cdt.start()
-        }
 
     }
 }

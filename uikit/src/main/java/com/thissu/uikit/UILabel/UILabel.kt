@@ -24,7 +24,7 @@ class UILabel(): com.thissu.uikit.UIView() {
     override fun draw(canvas: Canvas){
 
         //设置绘制的起点，即锚点.
-        canvas.translate(frame.x, frame.y)
+        canvas.translate(frame.dpiX, frame.dpiY)
 
         // 创建画笔
         val paint = Paint()
@@ -34,7 +34,7 @@ class UILabel(): com.thissu.uikit.UIView() {
         paint.setColor(backgroundColor)//设置颜色
         paint.setStyle(Paint.Style.FILL)//默认绘图为填充模式
 
-        canvas.drawRect(0f, 0f, frame.width, frame.height, paint)
+        canvas.drawRect(0f, 0f, frame.dpiWidth, frame.dpiHeight, paint)
 
 
         paint.setColor(Color.BLACK)//设置颜色
@@ -45,7 +45,7 @@ class UILabel(): com.thissu.uikit.UIView() {
 
             //计算文字的y坐标
             var fontMetrics = paint.fontMetrics
-            var y = frame.height / 2 + (Math.abs(fontMetrics.ascent) - fontMetrics.descent) / 2
+            var y = frame.dpiHeight / 2 + (Math.abs(fontMetrics.ascent) - fontMetrics.descent) / 2
 
 
 

@@ -21,10 +21,11 @@ fun com.thissu.uikit.UIView.dispatchTouchesBeganEvent(touch:UITouch, withEvent: 
 
         //计算点击位置相对于子视图的坐标
         var subTouch = UITouch()
-        subTouch.touchX = touch.touchX - subview.frame.x
-        subTouch.touchY = touch.touchY - subview.frame.y
+        subTouch.touchX = touch.touchX - subview.frame.dpiX
+        subTouch.touchY = touch.touchY - subview.frame.dpiY
 
-        if (subTouch.touchX >=0 && subTouch.touchX <= subview.frame.width && subTouch.touchY >= 0 && subTouch.touchY <= subview.frame.height){
+        //注意计算点击事件的时候，也需要使用dpi尺寸来计算
+        if (subTouch.touchX >=0 && subTouch.touchX <= subview.frame.dpiWidth && subTouch.touchY >= 0 && subTouch.touchY <= subview.frame.dpiHeight){
             //当点在子视图的范围内时，才进行子视图的分发
             subview.dispatchTouchesBeganEvent(subTouch,withEvent)
             isSubviewTouch = true
