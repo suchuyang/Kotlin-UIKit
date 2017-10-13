@@ -3,14 +3,12 @@ package com.thissu.uikit.DemoView
 import android.view.MotionEvent
 import com.thissu.uikit.Foundation.NSLog
 import com.thissu.uikit.Foundation.UITouch
-
+import com.thissu.uikit.UIView
 
 /**
- * Created by this on 2017/10/5.
+ * Created by apple on 2017/10/13.
  */
-class DemoView():com.thissu.uikit.UIView() {
-
-    var touchblock:(()->Unit)? = null
+class DemoTouchView(): UIView() {
 
     var lastX = 0f
     var lastY = 0f
@@ -33,7 +31,7 @@ class DemoView():com.thissu.uikit.UIView() {
         var currentx = withEvent.x
         var currenty = withEvent.y
 
-         NSLog.print("current:{$currentx,$currenty}  last:{$lastX,$lastY}")
+        NSLog.print("current:{$currentx,$currenty}  last:{$lastX,$lastY}")
         //注意获取到的是dpi的位置，需要转换成320比例的
         frame.x += (currentx - lastX)/frame.frameRatio
         frame.y += (currenty - lastY)/frame.frameRatio
@@ -44,5 +42,4 @@ class DemoView():com.thissu.uikit.UIView() {
         setNeedsDisplay()
 
     }
-
 }

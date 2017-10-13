@@ -14,6 +14,7 @@ import com.thissu.uikit.Foundation.NSLog
 import com.thissu.uikit.UIViewController.UIViewController
 
 import android.view.WindowManager
+import com.thissu.uikit.Foundation.ERROR_HIGH_GRADE
 import com.thissu.uikit.Foundation.UIScreen
 import com.thissu.uikit.Foundation.UITouch
 import com.thissu.uikit.UIApplication.UIApplication
@@ -138,6 +139,8 @@ open class UIWindow : View{
         }
 
 
+        rootViewController!!.viewWillAppear()
+
         NSLog.print("window onAttachedToWindow")
     }
 
@@ -154,31 +157,13 @@ open class UIWindow : View{
         NSLog.print("UIView onDraw")
         if(canvas != null){
 
-            if (!rootViewController!!.isCurrentViewController){
-                //调用viewWillAppear，开始进行绘图的工作
-                rootViewController!!.viewWillAppear()
-
-                rootViewController?.drawViewsOn(canvas = canvas)
-
-                rootViewController!!.viewDidAppear()
-
-            }
-            else{
-
-                rootViewController?.drawViewsOn(canvas = canvas)
-
-                //调用vc的绘制完成接口
-
-            }
-
-
-
+            rootViewController?.drawViewsOn(canvas = canvas)
 
 
             //绘图结束之后需要调用一个视图绘制完成的函数。
         }
         else{
-//            NSLog.print("high-grade error: 画布不存在！")
+            NSLog.print("$ERROR_HIGH_GRADE: 画布不存在！")
         }
 
     }
@@ -187,13 +172,14 @@ open class UIWindow : View{
         super.onWindowFocusChanged(hasWindowFocus)
         NSLog.print("window onWindowFocusChanged")
 
+        //这个接口在日志输出中，是早于onDraw的
+
     }
 
 
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
 
-        NSLog.print("dispatchTouchEvent")
 
         val touch = UITouch()
 
@@ -201,10 +187,9 @@ open class UIWindow : View{
         touch.touchY = event!!.getY()
 
 
-        if (event?.action == MotionEvent.ACTION_DOWN){
-            rootViewController!!.view!!.dispatchTouchesBeganEvent(touch,event!!)
-        }
 
-        return super.dispatchTouchEvent(event)
+        rootViewController!!.view!!.dispatchTouchesEvent(touch,event!!)
+
+        return true
     }
 }

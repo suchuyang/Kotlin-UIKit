@@ -182,9 +182,12 @@ open class UIView(){
     /**
      * 触摸开始的事件，子类如果重写这个接口并且做了相应的操作
      * */
-    open fun touchesBegan(touch:UITouch, withEvent: MotionEvent){
+    open fun touchesBegan(touch:UITouch, withEvent: MotionEvent){}
 
-    }
+    /**
+     * 触摸开始的事件，子类如果重写这个接口并且做了相应的操作
+     * */
+    open fun touchesMoved(touch:UITouch, withEvent: MotionEvent){}
 
 
 }

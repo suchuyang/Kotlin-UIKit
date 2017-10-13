@@ -53,7 +53,7 @@ class DemoWindow:UIWindow {
     }
 
     override fun windowWillLoad() {
-        var demoVC = DemoViewController()
+        var demoVC = DemoTouchViewController()
 
         this.rootViewController = demoVC
     }

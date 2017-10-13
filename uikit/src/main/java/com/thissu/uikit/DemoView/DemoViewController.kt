@@ -95,13 +95,8 @@ class DemoViewController(): UIViewController() {
         NSLog.print("demo viewController viewWillAppear")
     }
 
-    override fun viewDidAppear() {
-        NSLog.print("demo viewController viewDidAppear")
-
-    }
 
     fun moveBlueView(){
-
 
         blueview?.animation()
 

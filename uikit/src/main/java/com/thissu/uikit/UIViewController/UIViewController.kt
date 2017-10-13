@@ -85,9 +85,9 @@ open class UIViewController() {
     /**
      * ViewController展示完成
      * */
-    open fun viewDidAppear(){
-
-    }
+//    open fun viewDidAppear(){
+//
+//    }
 
     /**
      * ViewController将要消失
