@@ -51,6 +51,7 @@ class CGRect(){
     var dpiHeight: Float = 0f
 
 
+
     init {
 
         //初始化里面要把比例赋值，注意如果frame的初始化在UIScreen之前执行了，那么比例就会出错。所以一定要做赋值校验。

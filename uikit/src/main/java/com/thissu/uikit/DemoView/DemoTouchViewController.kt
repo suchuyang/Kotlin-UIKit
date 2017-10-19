@@ -16,11 +16,13 @@ class DemoTouchViewController() : UIViewController(){
 
     override fun viewDidLoad() {
         touchview1 = DemoTouchView()
+        touchview1!!.name = "red"
         touchview1!!.frame = CGRect(13f,100f,200f, 40f)
         touchview1!!.backgroundColor = Color.RED
         this.view!!.addSubview(touchview1!!)
 
         touchview2 = DemoTouchView()
+        touchview2!!.name = "green"
         touchview2!!.frame = CGRect(13f,250f,200f, 40f)
         touchview2!!.backgroundColor = Color.GREEN
         this.view!!.addSubview(touchview2!!)

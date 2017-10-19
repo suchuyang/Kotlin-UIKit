@@ -26,6 +26,10 @@ open class UIView(){
      *
      */
 
+    var isRootWindowView = false//使用一个bool来标记视图是否是根视图，根视图只能是ViewController的视图。在进行父视图递归的时候这个根据这个变量来判断
+
+    var name:String = ""//视图的名字，用来标记视图
+
     //视图的尺寸属性
     final var  frame: CGRect = CGRect()
         get() = field
@@ -33,10 +37,7 @@ open class UIView(){
             field = value.copy()
         }/** 注意frame属性的赋值一定要用copy */
 
-    //
-
     var backgroundColor: Int = Color.WHITE/**背景颜色*/
-
 
     var layer:CALayer = CALayer()/**layer，里面存储绘图和transform相关的东西.layer设置为只读属性*/
         get() = field
@@ -45,6 +46,11 @@ open class UIView(){
 
     var superview: UIView? = null//记录父视图，我们在做某些操作的时候，需要使用这个变量。注意循环引用问题
 
+    var touches = mutableListOf<UITouch>()//记录视图的触摸点
+
+    companion object {
+        val touchingView = SparseArray<UIView>()
+    }
 
     /** ---------------------------------------------- 构造函数 -----------------------------------------
      *
@@ -60,17 +66,19 @@ open class UIView(){
     }
 
     override fun toString(): String {
+        return  "$name : {${frame.x},${frame.y},${frame.width},${frame.height}}"
 
-        return  "view : {${frame.x},${frame.y},${frame.width},${frame.height}} and color:$backgroundColor and ${super.toString()}"
+//        return  "view : {${frame.x},${frame.y},${frame.width},${frame.height}} and ${super.toString()}"
     }
 
     /** ---------------------------------------------- 添加和移除视图 -----------------------------------------
      *
      */
 
-    public fun addSubview(view: UIView){
+    final fun addSubview(view: UIView){
 
         if(view != null){
+
             subViews.add(view)
 
             //添加子视图的同时赋值父视图。
@@ -81,9 +89,13 @@ open class UIView(){
         }
     }
 
-    public fun removeFromSuperview(){
+    final fun removeFromSuperview(){
 
-
+        if(superview != null ){
+            superview!!.subViews.remove(this)
+            this.superview = null
+            UIApplication.sharedApplication.keyWindow!!.invalidate()
+        }
 
     }
 
@@ -182,12 +194,40 @@ open class UIView(){
     /**
      * 触摸开始的事件，子类如果重写这个接口并且做了相应的操作
      * */
-    open fun touchesBegan(touch:UITouch, withEvent: MotionEvent){}
+    open fun touchesBegan(touches:MutableList<UITouch>, withEvent: MotionEvent){}
 
     /**
      * 触摸开始的事件，子类如果重写这个接口并且做了相应的操作
+     *
+     * 默认返回false，表示对move事件不做处理。当做处理时，返回true
      * */
-    open fun touchesMoved(touch:UITouch, withEvent: MotionEvent){}
+    open fun touchesMoved(touches:MutableList<UITouch>, withEvent: MotionEvent): Boolean{
+
+        //
+        return false
+    }
+
+    /**
+     * 触摸取消的事件，子类如果重写这个接口并且做了相应的操作
+     *
+     * 默认返回false，表示对move事件不做处理。当做处理时，返回true
+     * */
+    open fun touchesCanceled(touches:MutableList<UITouch>, withEvent: MotionEvent): Boolean{
+
+        //
+        return false
+    }
+
+    /**
+     * 触摸结束的事件，子类如果重写这个接口并且做了相应的操作
+     *
+     * 默认返回false，表示对move事件不做处理。当做处理时，返回true
+     * */
+    open fun touchesEnd(touches:MutableList<UITouch>, withEvent: MotionEvent): Boolean{
+
+        //
+        return false
+    }
 
 
 }

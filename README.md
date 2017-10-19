@@ -39,7 +39,10 @@
         view!!.addSubview(label)
 
 
-![](./screenshot01.png)
+![](./screenshot/screenshot01.png)
+
+
+[toc]
 
 
 ## 编码尺寸和dpi尺寸
@@ -49,3 +52,66 @@
 
 编码尺寸是指在写代码的时候，我们给视图赋值的尺寸，以屏幕宽度320作为标准
 dpi尺寸，指的是视图在实际像素上应该具有的尺寸。
+
+## 触摸事件
+
+添加了touch事件，模仿iOS，实现了
+
+* touchesBegan
+* touchesMove
+* touchesEnd
+
+能力有限，多点触摸搞不下去了。在ACTION_MOVE事件中，无法获取到究竟是哪一个触摸点在移动，所以只能暂时实现单点触摸了。
+
+另外注意判断移动距离时还得使用Android原有的判断方式，因为UITouch判断存在问题，会出现视图抖动的现象。
+
+示例代码：
+
+	var lastX = 0f
+    var lastY = 0f
+
+
+    override fun touchesBegan(touches: MutableList<UITouch>, withEvent: MotionEvent) {
+
+
+        val atouch = touches.first()
+        NSLog.print("touchesBegan $name :${atouch.touchX},y:${atouch.touchY}")
+
+
+        //注意判断移动距离时还得使用Android原有的判断方式，因为UITouch判断存在问题，会出现视图抖动的现象。
+        lastX = withEvent.getX(withEvent.actionIndex)
+        lastY = withEvent.getY(withEvent.actionIndex)
+    }
+
+    override fun touchesMoved(touches: MutableList<UITouch>, withEvent: MotionEvent) : Boolean {
+
+
+        //开始移动
+        var currentx = withEvent.getX(withEvent.actionIndex)
+        var currenty = withEvent.getY(withEvent.actionIndex)
+
+        NSLog.print("touchesMoved $name :{$currentx,$currenty}  last:{$lastX,$lastY}")
+        //注意获取到的是dpi的位置，需要转换成320比例的
+        frame.x += (currentx - lastX)/frame.frameRatio
+        frame.y += (currenty - lastY)/frame.frameRatio
+
+        lastX = currentx
+        lastY = currenty
+
+        //改变了尺寸之后要调用setNeedsDisplay，否则不会触发重新绘制视图的动作。
+        setNeedsDisplay()
+
+        return true
+
+    }
+
+    override fun touchesEnd(touches: MutableList<UITouch>, withEvent: MotionEvent): Boolean {
+        val atouch = touches.first()
+
+        NSLog.print("touchesEnd $name :${atouch.touchX},y:${atouch.touchY}")
+        return true
+
+    }
+    
+
+![](./screenshot/touchdemo.gif)

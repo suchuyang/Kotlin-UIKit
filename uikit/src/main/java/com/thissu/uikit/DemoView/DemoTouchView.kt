@@ -14,24 +14,26 @@ class DemoTouchView(): UIView() {
     var lastY = 0f
 
 
-    override fun touchesBegan(touch: UITouch, withEvent: MotionEvent) {
+    override fun touchesBegan(touches: MutableList<UITouch>, withEvent: MotionEvent) {
 
-        NSLog.print("demo view touch position to view is x:${touch.touchX},y:${touch.touchY}")
 
-//        if(touchblock != null){
-//            touchblock!!()
-//        }
-        lastX = withEvent.x
-        lastY = withEvent.y
+        val atouch = touches.first()
+        NSLog.print("touchesBegan $name :${atouch.touchX},y:${atouch.touchY}")
+
+
+        //注意判断移动距离时还得使用Android原有的判断方式，因为UITouch判断存在问题，会出现视图抖动的现象。
+        lastX = withEvent.getX(withEvent.actionIndex)
+        lastY = withEvent.getY(withEvent.actionIndex)
     }
 
-    override fun touchesMoved(touch: UITouch, withEvent: MotionEvent) {
+    override fun touchesMoved(touches: MutableList<UITouch>, withEvent: MotionEvent) : Boolean {
+
 
         //开始移动
-        var currentx = withEvent.x
-        var currenty = withEvent.y
+        var currentx = withEvent.getX(withEvent.actionIndex)
+        var currenty = withEvent.getY(withEvent.actionIndex)
 
-        NSLog.print("current:{$currentx,$currenty}  last:{$lastX,$lastY}")
+        NSLog.print("touchesMoved $name :{$currentx,$currenty}  last:{$lastX,$lastY}")
         //注意获取到的是dpi的位置，需要转换成320比例的
         frame.x += (currentx - lastX)/frame.frameRatio
         frame.y += (currenty - lastY)/frame.frameRatio
@@ -39,7 +41,18 @@ class DemoTouchView(): UIView() {
         lastX = currentx
         lastY = currenty
 
+        //改变了尺寸之后要调用setNeedsDisplay，否则不会触发重新绘制视图的动作。
         setNeedsDisplay()
+
+        return true
+
+    }
+
+    override fun touchesEnd(touches: MutableList<UITouch>, withEvent: MotionEvent): Boolean {
+        val atouch = touches.first()
+
+        NSLog.print("touchesEnd $name :${atouch.touchX},y:${atouch.touchY}")
+        return true
 
     }
 }

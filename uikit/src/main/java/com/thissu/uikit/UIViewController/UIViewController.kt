@@ -21,7 +21,12 @@ open class UIViewController() {
     var view: com.thissu.uikit.UIView? = UIView()
         get() = field
         set(value) {
+
+            field?.isRootWindowView = false
+
             field = value
+
+            field?.isRootWindowView = true
 
             //如果视图空了，就调用unload方法
             if(value == null){

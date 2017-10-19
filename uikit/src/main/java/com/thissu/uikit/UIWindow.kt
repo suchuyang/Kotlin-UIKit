@@ -180,16 +180,27 @@ open class UIWindow : View{
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
 
+        if (event != null){
 
-        val touch = UITouch()
+            //遍历触摸点，转换成UItouch的集合，传递给主视图。
+            val touches = mutableListOf<UITouch>()
 
-        touch.touchX = event!!.getX()
-        touch.touchY = event!!.getY()
+            for(i in 0 until event.pointerCount){
+                val touch = UITouch()
+
+                touch.touchX = event.getX(i)
+                touch.touchY = event.getY(i)
+                touch.pointerId = event.getPointerId(i)
+
+                touches.add(i, touch)
+            }
+
+            rootViewController!!.view!!.dispatchTouchesEvent(touches, event)
+
+            return true
+        }
 
 
-
-        rootViewController!!.view!!.dispatchTouchesEvent(touch,event!!)
-
-        return true
+        return false
     }
 }

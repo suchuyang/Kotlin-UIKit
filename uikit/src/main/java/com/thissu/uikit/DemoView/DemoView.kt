@@ -16,9 +16,9 @@ class DemoView():com.thissu.uikit.UIView() {
     var lastY = 0f
 
 
-    override fun touchesBegan(touch: UITouch, withEvent: MotionEvent) {
+    override fun touchesBegan(touches: MutableList<UITouch>, withEvent: MotionEvent) {
 
-        NSLog.print("demo view touch position to view is x:${touch.touchX},y:${touch.touchY}")
+//        NSLog.print("demo view touch position to view is x:${touch.touchX},y:${touch.touchY}")
 
 //        if(touchblock != null){
 //            touchblock!!()
@@ -27,13 +27,13 @@ class DemoView():com.thissu.uikit.UIView() {
         lastY = withEvent.y
     }
 
-    override fun touchesMoved(touch: UITouch, withEvent: MotionEvent) {
+    override fun touchesMoved(touches: MutableList<UITouch>, withEvent: MotionEvent) : Boolean {
 
         //开始移动
         var currentx = withEvent.x
         var currenty = withEvent.y
 
-         NSLog.print("current:{$currentx,$currenty}  last:{$lastX,$lastY}")
+//         NSLog.print("current:{$currentx,$currenty}  last:{$lastX,$lastY}")
         //注意获取到的是dpi的位置，需要转换成320比例的
         frame.x += (currentx - lastX)/frame.frameRatio
         frame.y += (currenty - lastY)/frame.frameRatio
@@ -42,6 +42,8 @@ class DemoView():com.thissu.uikit.UIView() {
         lastY = currenty
 
         setNeedsDisplay()
+
+        return true
 
     }
 
